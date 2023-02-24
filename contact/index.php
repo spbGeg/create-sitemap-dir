@@ -7,10 +7,11 @@
 
 
 $APPLICATION->SetTitle('Контакты');
+
 ?>
 
-    <!-- ******ABOUT****** -->
-    <section  class="about section">
+    <!-- ******CONTACTS****** -->
+    <section  class="contacts section">
         <div class="container">
             <h1 class="title text-center">Контакты</h1>
             <p class="intro text-center">Выберите на карте подходящий офис</p>
@@ -20,7 +21,7 @@ $APPLICATION->SetTitle('Контакты');
                 </div>
             </div><!--//row-->
         </div><!--//container-->
-    </section><!--//about-->
+    </section><!--//contacts-->
 
 <?
 require($_SERVER['DOCUMENT_ROOT'].'/bitrix/footer.php');
