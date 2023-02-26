@@ -5,7 +5,6 @@
 /** @global CMain $APPLICATION */
 /** @global CUser $USER */
 
-
 $APPLICATION->SetTitle('Контакты');
 
 ?>

@@ -30,7 +30,7 @@ jQuery(document).ready(function($) {
 
                             var myMap = new ymaps.Map('map', {
                                 center: [50.443705, 30.530946],
-                                zoom: 14,
+                                zoom: 16,
                             });
 
                             $offices.forEach(function (office) {

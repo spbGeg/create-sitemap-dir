@@ -1,4 +1,8 @@
 <? if (!defined("B_PROLOG_INCLUDED") || B_PROLOG_INCLUDED !== true) die();
+
+//use VadimRomanov\Contact;
+use VadimRomanov\Contact;
+
 /**
  * @global CMain $APPLICATION
  * @var array $arParams
@@ -9,9 +13,11 @@
  * @var string $templateFolder
  */
 
-
 ?>
 <div class="map-contact">
+    <div class="map-contact__msg <?=($arResult['CREATE_ELEMENTS']['ERROR']) ? ' error' : '' ?>">
+        <?= $arResult['CREATE_ELEMENTS']['MSG'] . ' ' .$arResult['CREATE_ELEMENTS']['ERROR']?>
+    </div>
     <div class="map-contact__container container" >
         <div class="map-contact__elements">
             <div class="map-contact__item"
@@ -34,3 +40,6 @@
 </div>
 
 
+<?
+
+?>
