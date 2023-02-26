@@ -111,16 +111,15 @@ class FabricContacts extends IBlockMigration
         }
     }
 
-    public function fabricOffice()
+    /**
+     * This method create typeIblock, iblock, it`s prop, it`s demo elements
+     * @return array
+     */
+    public function fabricOffice(): array
     {
-
-        $result = [
-            'STATUS' => 'NO_NEEDED',
-            'MSG' => '',
-            'ERROR' => '',
-        ];
         $error = [];
         $msg = [];
+        $result = [];
 
         //check isset iblock type
         $resTypeIblick = $this->findTypeIblock($this->iblockType['ID']);
@@ -133,9 +132,9 @@ class FabricContacts extends IBlockMigration
                 $msg[] = 'Тип инфоблока Контент успешно добавлен';
             } else {
                 $error[] = "Ошибка добавления iblockType " . $typeIblock['ERROR'];
+                $result['STATUS'] = 'fail';
             }
         }
-
 
         $this->iblock['ID'] = $this->findIblock($this->iblockType['ID'], $this->iblock['CODE']);
         //create iblock
@@ -150,6 +149,7 @@ class FabricContacts extends IBlockMigration
                 $this->iblock['ID'] = $resIblock['ID'];
             } else {
                 $error[] = "Ошибка добавления инфоблока " . $resIblock['ERROR'];
+                $result['STATUS'] = 'fail';
             }
         }
 
@@ -171,23 +171,20 @@ class FabricContacts extends IBlockMigration
                     }
                     if (isset($resAddEl['ERROR'])) {
                         $error[] = "Элемент не добавлен " . $resAddEl['ERROR'];
+                        $result['STATUS'] = 'fail';
                     }
-
                 }
                 if (empty($error)) {
+                    $msg[] = 'Перезагрузите страницу';
                     $result['STATUS'] = 'allCreated';
                 }
+            }else{
+                $result['STATUS'] = 'allCreated';
             }
-
         }
-
         $result['MSG'] = $msg;
         $result['ERROR'] = $error;
 
         return $result;
-
-
     }
-
-
 }

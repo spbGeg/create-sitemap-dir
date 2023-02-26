@@ -12,6 +12,13 @@ use VadimRomanov\Tools;
 class IBlockMigration
 {
 
+    /**
+     * Create new iblock
+     * @param $typeCode
+     * @param $code
+     * @param $name
+     * @return array
+     */
     protected function addIblock($typeCode, $code, $name)
     {
         $result = [];
@@ -42,20 +49,33 @@ class IBlockMigration
         }
     }
 
+    /**
+     * Find Iblock by code, return it ID
+     *
+     * @param $typeCode
+     * @return array|null
+     * @throws SystemException
+     * @throws \Bitrix\Main\ArgumentException
+     * @throws \Bitrix\Main\ObjectPropertyException
+     */
     public function findTypeIblock($typeCode)
     {
-
-
         $result = \Bitrix\Iblock\TypeTable::getList([
             'select' => [
                 'ID',
             ],
             'filter' => ['=ID' => $typeCode],
+            'limit' => 1,
         ])->fetchAll();
         return array_shift($result);
-
     }
 
+    /**
+     * create typeIblock return array with status process
+     *
+     * @param $typeCode
+     * @return array
+     */
     public function addTypeIblock($typeCode)
     {
         $result = [
@@ -90,13 +110,20 @@ class IBlockMigration
         }
     }
 
+    /**
+     * Ib find iblock  return id
+     *
+     * @param $typeCode
+     * @param $code
+     * @return false|string
+     */
+
     protected function findIblock($typeCode, $code)
     {
         $arIblock = \CIBlock::GetList(
             array(),
             array(
                 'TYPE' => $typeCode,
-                //'SITE_ID' => SITE_ID,
                 'CODE' => $code,
                 'CHECK_PERMISSIONS' => 'N'
             )
@@ -108,30 +135,13 @@ class IBlockMigration
         }
     }
 
-
-    protected function updateFields($IBlockId, $iblockDefaultFields)
-    {
-        $sort = 10;
-        foreach ($iblockDefaultFields as $fieldName => $fieldValue) {
-            $caption = $fieldValue[0] ?? $fieldName;
-            if (!empty($fieldValue[1])) {
-                $listField = new \CListElementField($IBlockId, $fieldName, $caption, $sort);
-
-                $addInList = $fieldValue[1]['IU_ADD_IN_LIST'] ?? false;
-
-                if ($addInList == true) {
-                    $listField->SetSettings(["SHOW_ADD_FORM" => 'Y', "SHOW_EDIT_FORM" => 'Y']);
-                    $sort += 10;
-                }
-                //$listField->Update(["SORT" => $sort]);
-
-                $settings = $fieldValue[1]['SETTINGS'] ?? [];
-                if (!empty($settings)) {
-                    $listField->SetSettings($settings);
-                }
-            }
-        }
-    }
+    /**
+     * Check is created prop in iblock, by first field
+     *
+     * @param $iblockId
+     * @param $arCdodeProp
+     * @return array
+     */
 
     protected function isExistPropertyFields($iblockId, $arCdodeProp)
     {
@@ -143,6 +153,13 @@ class IBlockMigration
         return $result;
     }
 
+    /**
+     * Add property by iblock
+     *
+     * @param $IBlockId
+     * @param $IBlockFields
+     * @return void
+     */
     protected function addPropertyFields($IBlockId, $IBlockFields)
     {
         $ufe = new \CIBlockPropertyEnum();
@@ -180,7 +197,6 @@ class IBlockMigration
                     ]
                 ],
                 'ACTIVE' => 'Y',
-                // 'LIST_TYPE' => 'L' // L, C
             );
 
             if (in_array($fieldValue[1], ['E', 'G', 'E:EList', 'S:ElementXmlID', 'E:EAutocomplete', 'iblock_element', 'iblock_section'])) {
@@ -208,28 +224,22 @@ class IBlockMigration
 
             $iblockproperty = new \CIBlockProperty;
             $ufId = $iblockproperty->Add($aUserField);
-            //$ufId = $this->addIblockElementProperty($aUserField);
 
-            if ($fieldValue[1] == 'L' && intval($ufId) > 0) {
-                $uf_sort = 10;
-
-                foreach ($fieldValue[3] as $i => $item) {
-                    if (!isset($item['XML_ID'])) $item['XML_ID'] = 'X' . ($i + 1);
-                    if (!isset($item['SORT'])) $item['SORT'] = $uf_sort * ($i + 1);
-                    if (!isset($item['DEF'])) $item['DEF'] = 'N';
-                    $ufe->Add([
-                        'PROPERTY_ID' => $ufId,
-                        'VALUE' => $item['VALUE'],
-                        'XML_ID' => $item['XML_ID'],
-                        'DEF' => $item['DEF'],
-                    ]);
-                }
-            }
 
             $CACHE_MANAGER->ClearByTag("create_property" . $IBlockId);;
             $sort += 10;
         }
     }
+
+
+    /**
+     * Add elemetst in iblock
+     *
+     * @param $iblockId
+     * @param $element
+     * @param $userCreateId
+     * @return array
+     */
 
     protected function addElementIblock($iblockId, $element, $userCreateId = 1)
     {
@@ -249,17 +259,27 @@ class IBlockMigration
                 $result['STATUS'] = 'success';
                 $result['ID'] = $elId;
                 $result['MSG'] = 'Элемент с id: ' . $elId . ' успешно добавлен';
-                return $result;
+
             } else {
                 $errorAddEl = $el->LAST_ERROR;
-                return $result['ERROR'] = 'Ошибка при добавлении элемента: ' . $el->LAST_ERROR . '<br>';
-            }
-        } catch (\Exception $e) {
-            return $result['ERROR'] = 'Критическая ошибка при добавлении элемента: ' . $el->LAST_ERROR . '<br>';
-        }
+                $result['ERROR'] = 'Ошибка при добавлении элемента: ' . $el->LAST_ERROR . '<br>';
 
+            }
+            return $result;
+        } catch (\Exception $e) {
+            $result['ERROR'] = 'Критическая ошибка при добавлении элемента: ' . $el->LAST_ERROR . '<br>';
+            return $result;
+        }
     }
-    protected function isExistElements($iblockCode){
+
+    /**
+     * Check is exist elements in iblock
+     *
+     * @param $iblockCode
+     * @return bool
+     */
+    protected function isExistElements($iblockCode)
+    {
         $helperIblock = new HelperIblock();
         $iblockTableName = $helperIblock->getTablePathIblock($iblockCode);
 
@@ -269,13 +289,11 @@ class IBlockMigration
             'count_total' => true,
         ]);
         $result = $arRes->getCount();
-        if($result > 0){
+        if ($result > 0) {
             return true;
-        }else{
+        } else {
             return false;
         }
-
-
     }
 
 }

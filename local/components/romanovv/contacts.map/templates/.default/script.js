@@ -1,7 +1,6 @@
 jQuery(document).ready(function($) {
     /* ======= ContactMap ======= */
 
-
         var $offices = document.querySelectorAll('.map-contact__item');
         //console.log('$offices map-contact__item',$offices );
         if ($offices) {
@@ -53,8 +52,7 @@ jQuery(document).ready(function($) {
                                     iconImageOffset: [-25, -45]
                                 }))
 
-                               // myMap.behaviors.disable('scrollZoom');
-                                // Выставляем масштаб карты чтобы были видны все группы.
+                                // set size map that be see all elements on map
                                 myMap.setBounds(myMap.geoObjects.getBounds());
                             });
 
