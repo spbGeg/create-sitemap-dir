@@ -6,6 +6,7 @@ namespace VadimRomanov\Migrations;
 use Bitrix\Main\Loader;
 use Bitrix\Iblock;
 use Bitrix\Main\SystemException;
+use VadimRomanov\HelperIblock;
 use VadimRomanov\Tools;
 
 class IBlockMigration
@@ -157,7 +158,7 @@ class IBlockMigration
             $typeAr = explode(':', $fieldValue[1]);
             $aUserField = array(
                 'IBLOCK_ID' => $IBlockId,
-                'CODE' => 'UF_' . strtoupper($fieldName),
+                'CODE' => strtoupper($fieldName),
                 'MULTIPLE' => !empty($fieldValue[2]['MULTIPLE']) ? $fieldValue[2]['MULTIPLE'] : 'N',
                 'PROPERTY_TYPE' => $typeAr[0], //  S - строка, N - число, F - файл, L - список, E - привязка к элементам, G - привязка к группам.
                 'USER_TYPE' => $typeAr[1] ?? '',
@@ -247,13 +248,33 @@ class IBlockMigration
             if ($elId) {
                 $result['STATUS'] = 'success';
                 $result['ID'] = $elId;
+                $result['MSG'] = 'Элемент с id: ' . $elId . ' успешно добавлен';
+                return $result;
             } else {
                 $errorAddEl = $el->LAST_ERROR;
-                return $result['ERROR'] = 'Ошибка при добавлении елемента: ' . $el->LAST_ERROR . '<br>';
+                return $result['ERROR'] = 'Ошибка при добавлении элемента: ' . $el->LAST_ERROR . '<br>';
             }
         } catch (\Exception $e) {
-            return $result['ERROR'] = 'Критическая ошибка при добавлении елемента: ' . $el->LAST_ERROR . '<br>';
+            return $result['ERROR'] = 'Критическая ошибка при добавлении элемента: ' . $el->LAST_ERROR . '<br>';
         }
+
+    }
+    protected function isExistElements($iblockCode){
+        $helperIblock = new HelperIblock();
+        $iblockTableName = $helperIblock->getTablePathIblock($iblockCode);
+
+        $arRes = $iblockTableName::getList([
+
+            'select' => ['ID'],
+            'count_total' => true,
+        ]);
+        $result = $arRes->getCount();
+        if($result > 0){
+            return true;
+        }else{
+            return false;
+        }
+
 
     }
 

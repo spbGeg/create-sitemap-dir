@@ -122,68 +122,69 @@ class FabricContacts extends IBlockMigration
         $error = [];
         $msg = [];
 
-            //check isset iblock type
-            $resTypeIblick = $this->findTypeIblock($this->iblockType['ID']);
-            //$msg[] = 'Не удалось добавить данные';
+        //check isset iblock type
+        $resTypeIblick = $this->findTypeIblock($this->iblockType['ID']);
 
-            //create typeIblock
-            if (empty($resTypeIblick)) {
+        //create typeIblock
+        if (empty($resTypeIblick)) {
 
-                $resTypeIblick = $this->addTypeIblock($this->iblockType);
-                if (!isset($typeIblock['ERROR'])) {
-                    $msg[] = 'Тип инфоблока Контент успешно добавлен';
-                } else {
-                    $error[] = "Ошибка добавления iblockType " . $typeIblock['ERROR'];
-                }
+            $resTypeIblick = $this->addTypeIblock($this->iblockType);
+            if (!isset($typeIblock['ERROR'])) {
+                $msg[] = 'Тип инфоблока Контент успешно добавлен';
+            } else {
+                $error[] = "Ошибка добавления iblockType " . $typeIblock['ERROR'];
             }
-            //create iblock
-            $this->iblock['ID'] = $this->findIblock($this->iblockType['ID'], $this->iblock['CODE']);
-            //create iblock
-            if (empty($this->iblock['ID'])) {
+        }
 
-                $resIblock = $this->addIblock($this->iblockType['ID'], $this->iblock['CODE'], $this->iblock['NAME']);
-                if (!isset($resIblock['ERROR'])) {
-                    $msg[] = 'Инфоблок Контакты успешно добавлен';
-                    $this->iblock['ID'] = $resIblock['ID'];
-                } else {
-                    $error[] = "Ошибка добавления инфоблока " . $resIblock['ERROR'];
-                }
+
+        $this->iblock['ID'] = $this->findIblock($this->iblockType['ID'], $this->iblock['CODE']);
+        //create iblock
+        if (empty($this->iblock['ID'])) {
+
+            $resIblock = $this->addIblock($this->iblockType['ID'], $this->iblock['CODE'], $this->iblock['NAME']);
+
+            if (!isset($resIblock['ERROR'])) {
+                $msg[] = 'Инфоблок Контакты успешно добавлен';
+                $msg[] = 'Перезагрузите страницу для добавления свойств и элементов';
+                $result['STATUS'] = 'iblockCreated';
+                $this->iblock['ID'] = $resIblock['ID'];
+            } else {
+                $error[] = "Ошибка добавления инфоблока " . $resIblock['ERROR'];
+            }
+        }
+
+        if (!empty($this->iblock['ID'])) {
+            //create property if empty
+            $propertyCodeIblock = array_keys($this->iblockFields);
+            $issetProp = $this->isExistPropertyFields($this->iblock['ID'], $propertyCodeIblock[0]);
+            if (empty($issetProp)) {
+                $msg[] = 'Свойства инфоблока Контакты успешно добавлены';
+                $this->addPropertyFields($this->iblock['ID'], $this->iblockFields);
             }
 
-
-            if (!empty($this->iblock['ID'])) {
-                //create property
-                $propertyCodeIblock = array_keys($this->iblockFields);
-                $issetProp = $this->isExistPropertyFields($this->iblock['ID'], $propertyCodeIblock[0]);
-                if (empty($issetProp)) {
-                    $msg[] = 'Свойства инфоблока Контакты успешно добавлены';
-                    $this->addPropertyFields($this->iblock['ID'], $this->iblockFields);
-                }
-
-                //create elements
-
-                foreach ($this->arContactElements as $item){
+            //create elements
+            if (!$this->isExistElements($this->iblock['CODE'])) {
+                foreach ($this->arContactElements as $item) {
                     $resAddEl = $this->addElementIblock($this->iblock['ID'], $item);
-                    if(isset($resAddEl['ERROR'])){
-                        $error[] = "Элемент не добавлен " .$resAddEl['ERROR'];
+                    if ($resAddEl['ID']) {
+                        $msg[] = $resAddEl['MSG'];
+                    }
+                    if (isset($resAddEl['ERROR'])) {
+                        $error[] = "Элемент не добавлен " . $resAddEl['ERROR'];
                     }
 
                 }
-
-
-            } else {
-                $error[] = "Свойства и элементы инфоблока не добавлены, т.к. нет инфоблок не найден ";
+                if (empty($error)) {
+                    $result['STATUS'] = 'allCreated';
+                }
             }
 
+        }
 
-            //Tools::logFile($arPropCode, '$arPropCode fabric');
+        $result['MSG'] = $msg;
+        $result['ERROR'] = $error;
 
-            return [
-                'STATUS' => 'created',
-                'MSG' => $msg,
-                'ERROR' => $error,
-            ];
-
+        return $result;
 
 
     }
