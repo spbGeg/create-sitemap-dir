@@ -144,7 +144,6 @@ class FabricContacts extends IBlockMigration
 
             if (!isset($resIblock['ERROR'])) {
                 $msg[] = 'Инфоблок Контакты успешно добавлен';
-                $msg[] = 'Перезагрузите страницу для добавления свойств и элементов';
                 $result['STATUS'] = 'iblockCreated';
                 $this->iblock['ID'] = $resIblock['ID'];
             } else {
@@ -175,7 +174,6 @@ class FabricContacts extends IBlockMigration
                     }
                 }
                 if (empty($error)) {
-                    $msg[] = 'Перезагрузите страницу';
                     $result['STATUS'] = 'allCreated';
                 }
             }else{

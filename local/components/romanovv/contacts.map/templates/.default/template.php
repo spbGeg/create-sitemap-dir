@@ -23,6 +23,8 @@
                 <? } ?>
             </div>
             <div id="map" class="map-contact__map js-yandex-map js-map"></div>
+        <? }else{ ?>
+            <div class="no-elements">Перезагрузите страницу</div>
         <? } ?>
 
     </div>
