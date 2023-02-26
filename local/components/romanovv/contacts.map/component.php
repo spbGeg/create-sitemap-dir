@@ -4,6 +4,7 @@
 
 use Bitrix\Main\Config\Option;
 use Bitrix\Main\Application;
+
 /** @var CBitrixComponent
  * @var array $arParams
  * @var array $arResult
@@ -36,7 +37,7 @@ if (!$isCreateEl) {
 }
 
 
-$arParams["CACHE_TIME"] = ($USER->IsAdmin()) ? 1 : 86400;
+$arParams["CACHE_TIME"] =  86400;
 $arRes["CUR_PAGE"] = $APPLICATION->GetCurPage(false);
 
 $arRes["ORDER"] = array(
@@ -58,15 +59,11 @@ $arRes["SELECT"] = array(
 
 
 $CACHE_ID = serialize(array($arRes["CUR_PAGE"], $arRes["SELECT"], $arRes["FILTER"]));
-$arParams["select"] = $arRes["SELECT"];
-$arParams["filter"] = $arRes["FILTER"];
-$arParams["order"] = $arRes["ORDER"];
-$arResult = &$this->arResult;
 
-\VadimRomanov\Tools::logFile($CACHE_ID, '$CACHE_ID contact');
-$cache = $this->startResultCache($arParams["CACHE_TIME"], $CACHE_ID);
+$issetCache = $this->startResultCache($arParams["CACHE_TIME"], $CACHE_ID);
+\VadimRomanov\Tools::logFile($issetCache, '$issetCache contact');
 
-if ($this->startResultCache($arParams["CACHE_TIME"], $CACHE_ID)) {
+if ($issetCache) {
     $helperIblock = new \VadimRomanov\HelperIblock();
     $iblockTableName = $helperIblock->getTablePathIblock('contacts');
 
@@ -86,7 +83,7 @@ if ($this->startResultCache($arParams["CACHE_TIME"], $CACHE_ID)) {
         $el['EMAIL'] = $element->get('EMAIL')->getValue();
         $el['COORDS'] = $element->get('COORDS')->getValue();
         $el['CITY'] = $element->get('CITY')->getValue();
-        $arResult['ITEMS'][] =$el;
+        $arResult['ITEMS'][] = $el;
     }
 
     $this->SetResultCacheKeys(array(
@@ -102,5 +99,4 @@ if ($this->startResultCache($arParams["CACHE_TIME"], $CACHE_ID)) {
 
 }
 
-\VadimRomanov\Tools::logFile($cache, '$cache contact');
 $this->IncludeComponentTemplate();
