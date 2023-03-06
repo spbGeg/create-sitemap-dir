@@ -6,7 +6,6 @@
 /** @global CUser $USER */
 
 $APPLICATION->SetTitle('Контакты');
-
 ?>
 
     <!-- ******CONTACTS****** -->

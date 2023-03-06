@@ -120,21 +120,43 @@ class FabricContacts extends IBlockMigration
         $error = [];
         $msg = [];
         $result = [];
+        $deferred = new React\Promise\Deferred();
 
-        //check isset iblock type
-        $resTypeIblick = $this->findTypeIblock($this->iblockType['ID']);
+        $deferred->promise()
+            //get type iblock
+            ->then(function ($x) {
+                //check isset iblock type
+                $resTypeIblick = $this->findTypeIblock($this->iblockType['ID']);
 
-        //create typeIblock
-        if (empty($resTypeIblick)) {
+                //create typeIblock
+                if (empty($resTypeIblick)) {
 
-            $resTypeIblick = $this->addTypeIblock($this->iblockType);
-            if (!isset($typeIblock['ERROR'])) {
-                $msg[] = 'Тип инфоблока Контент успешно добавлен';
-            } else {
-                $error[] = "Ошибка добавления iblockType " . $typeIblock['ERROR'];
-                $result['STATUS'] = 'fail';
-            }
-        }
+                    $resTypeIblick = $this->addTypeIblock($this->iblockType);
+                    if (!isset($typeIblock['ERROR'])) {
+                        $msg[] = 'Тип инфоблока Контент успешно добавлен';
+                    } else {
+                        throw new \Exception('x= 2!!!');
+                        $error[] = "Ошибка добавления iblockType " . $typeIblock['ERROR'];
+                        $result['STATUS'] = 'fail';
+                    }
+                }
+
+                return $resTypeIblick;
+
+            })
+            ->then(function ($resTypeIblick){
+                echo 'x= ' . $x;
+                if($x == 2){
+                    throw new \Exception('x= 2!!!');
+                }
+            })
+            ->otherwise(function (\Exception $x) {
+                // Propagate the rejection
+                echo 'Reject ' . $x->getMessage();
+            });
+
+
+
 
         $this->iblock['ID'] = $this->findIblock($this->iblockType['ID'], $this->iblock['CODE']);
         //create iblock

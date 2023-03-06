@@ -21,7 +21,13 @@ $arRes = array();
 
 //create new office if no exist
 $arResult['CREATE_ELEMENTS'] = [];
+$arResult['ERROR'] = [];
+$arResult['ERROR'] = [];
 
+//check site template
+if(SITE_TEMPLATE_ID !== 'contacts'){
+    $arResult['ERROR'][] = GetMessage('ROMANOVV_SET_TMPL_CONTACTS');
+}
 $isCreatedEl = Option::get('romanovv.contact', 'create_elements');
 
 if (!$isCreatedEl) {
@@ -29,13 +35,14 @@ if (!$isCreatedEl) {
     $resCreateEl = $obFabricContact->fabricOffice();
 
     $arResult['CREATE_ELEMENTS']['STATUS'] =  $resCreateEl['STATUS'];
-    $arResult['CREATE_ELEMENTS']['MSG'] = implode('<br>', $resCreateEl['MSG']);
-    $arResult['CREATE_ELEMENTS']['ERROR'] = implode(', ', $resCreateEl['ERROR']);
+    $arResult['MSG'] = implode('<br>', $resCreateEl['MSG']);
+    $arResult['ERROR'] = array_merge($arResult['ERROR'],  $resCreateEl['ERROR']);
 
     if ($arResult['CREATE_ELEMENTS']['STATUS'] === 'allCreated') {
         Option::set('romanovv.contact', 'create_elements', 'Y');
     }
 }
+$arResult['ERROR'] = implode('<br>', $arResult['ERROR']);
 
 if ($isCreatedEl) {
 
