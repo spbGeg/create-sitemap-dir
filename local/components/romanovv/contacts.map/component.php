@@ -4,7 +4,6 @@
 
 use Bitrix\Main\Config\Option;
 
-
 /** @var CBitrixComponent
  * @var array $arParams
  * @var array $arResult
@@ -23,10 +22,10 @@ $arRes = array();
 $arResult['CREATE_ELEMENTS'] = [];
 $arResult['ERROR'] = [];
 $arResult['ERROR'] = [];
-
+Option::set('romanovv.contact', 'create_elements', '');
 //check site template
-if(SITE_TEMPLATE_ID !== 'contacts'){
-    $arResult['ERROR'][] = GetMessage('ROMANOVV_SET_TMPL_CONTACTS');
+if(SITE_TEMPLATE_ID !== 'contact'){
+    $arResult['ERROR'][] = GetMessage('ROMANOVV_SET_TMPL_CONTACTS'). SITE_TEMPLATE_ID;
 }
 $isCreatedEl = Option::get('romanovv.contact', 'create_elements');
 
@@ -35,8 +34,8 @@ if (!$isCreatedEl) {
     $resCreateEl = $obFabricContact->fabricOffice();
 
     $arResult['CREATE_ELEMENTS']['STATUS'] =  $resCreateEl['STATUS'];
-    $arResult['MSG'] = implode('<br>', $resCreateEl['MSG']);
-    $arResult['ERROR'] = array_merge($arResult['ERROR'],  $resCreateEl['ERROR']);
+    $arResult['MSG'] = (isset($resCreateEl['MSG'])) ? implode('<br>', $resCreateEl['MSG']) : '';
+    $arResult['ERROR'][] =  $resCreateEl['ERROR'];
 
     if ($arResult['CREATE_ELEMENTS']['STATUS'] === 'allCreated') {
         Option::set('romanovv.contact', 'create_elements', 'Y');

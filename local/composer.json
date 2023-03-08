@@ -1,5 +1,16 @@
 {
     "require": {
-        "react/promise": "^2.9"
+        "php": ">=8.0",
+        "react/promise": "^2.9",
+        "recoil/recoil": "*"
+    },
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "7.4"
+        },
+        "allow-plugins": {
+            "recoil/dev": true
+        }
     }
 }

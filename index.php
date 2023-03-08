@@ -9,27 +9,22 @@ use Bitrix\Main\Config\Option;
             <div class="container text-center">
                 <h2 class="title">Главная страница</h2>
                 <?
+                use Recoil\ReferenceKernel\ReferenceKernel;
 
-                $deferred = new React\Promise\Deferred();
+                function multiply($a, $b)
+                {
+                    yield; // force PHP to parse this function as a generator
+                    return $a * $b;
 
-                $deferred->promise()
-                    ->then(function ($x) {
+                }
 
-                        return $x + 1;
+                $myRes = ReferenceKernel::start(function () {
+                    $result = yield multiply(2, 3);
 
-                    })
-                    ->then(function ($x){
-                        echo 'x= ' . $x;
-                        if($x == 2){
-                            throw new \Exception('x= 2!!!');
-                        }
-                    })
-                    ->otherwise(function (\Exception $x) {
-                        // Propagate the rejection
-                        echo 'Reject ' . $x->getMessage();
-                    });
-                $deferred->resolve(1);
+                    return $result;
+                });
 
+                echo $myRes;
 
                 ?>
 
