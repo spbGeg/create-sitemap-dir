@@ -12,16 +12,29 @@ use Recoil\ReferenceKernel\ReferenceKernel;
 
 class FabricContacts extends IBlockMigration
 {
+    /**
+     * data for create iblock
+     * @var array[]
+     */
     private $iblock = [
         'CODE' => 'contacts',
         'NAME' => 'Контакты'
     ];
 
+    /**
+     * data for create type iblock
+     * @var array[]
+     */
     private $iblockType = [
         'ID' => 'content',
         'NAME' => 'Контент'
     ];
 
+    /**
+     * Property for iblock contacts
+     *
+     * @var array[]
+     */
     protected $iblockFields = [
         'CITY' => ['N', 'S',
             [
@@ -48,6 +61,10 @@ class FabricContacts extends IBlockMigration
             ],
         ],
     ];
+    /**
+     * Demo elemements
+     * @var array[]
+     */
     private $arContactElements = [
         [
             'NAME' => 'Офис 1',
@@ -106,6 +123,12 @@ class FabricContacts extends IBlockMigration
     ];
 
 
+    /**
+     * construct method for FabricContacts class
+     *
+     * @throws SystemException
+     * @throws \Bitrix\Main\LoaderException
+     */
     public function __construct()
     {
         if (!Loader::IncludeModule("iblock")) {
@@ -113,13 +136,20 @@ class FabricContacts extends IBlockMigration
         }
     }
 
+    /**
+     * Method for crfeate type iblock
+     *
+     * @param $result
+     * @return array
+     * @throws SystemException
+     * @throws \Bitrix\Main\ArgumentException
+     * @throws \Bitrix\Main\ObjectPropertyException
+     */
     private function createTypeIblock($result)
     {
-
-
         //check isset iblock type
         $resTypeIblock = $this->issetTypeIblock($this->iblockType['ID']);
-        Tools::logFile($resTypeIblock, '$resTypeIblock before create typeIblock');
+
         //create typeIblock
         if (empty($resTypeIblock)) {
 
@@ -142,34 +172,33 @@ class FabricContacts extends IBlockMigration
         if (empty($resTypeIblock)) {
             throw new \Exception("Тип инфоблока не удалось добавить");
         }
-        //yield;
+
         return $result;
     }
 
-    private function createIblock($result)
+    /**
+     * Method for create iblock
+     *
+     * @param array $result
+     * @return array
+     * @throws \Exception
+     */
+    private function createIblock(array $result): array
     {
-        //yield;
-
         $this->iblock['ID'] = $this->findIblock($this->iblockType['ID'], $this->iblock['CODE']);
         //create iblock
         if (empty($this->iblock['ID'])) {
 
-            $resIblock = ReferenceKernel::start(function () {
-                $result = yield $this->addIblock($this->iblockType['ID'], $this->iblock['CODE'], $this->iblock['NAME']);
-                Tools::logFile($result, 'create Iblock');
-                return $result;
-            });
-
+                $result =  $this->addIblock($this->iblockType['ID'], $this->iblock['CODE'], $this->iblock['NAME']);
             if (!isset($resIblock['ERROR'])) {
                 $result['MSG'][] = 'Инфоблок Контакты успешно добавлен';
                 $result['STATUS'] = 'iblockCreated';
-                $this->iblock['ID'] = $resIblock['ID'];
+                $this->iblock['ID'] = $result['IBLOCK']['ID'];
             } else {
                 $result['STATUS'] = 'fail';
                 throw new \Exception("Ошибка добавления инфоблока " . $resIblock['ERROR']);
             }
         }
-
 
         if (empty($this->iblock['ID'])) {
             throw new \Exception("Инфоблок не удалось добавить");
@@ -178,9 +207,15 @@ class FabricContacts extends IBlockMigration
         }
     }
 
-    private function createPropIblock($result)
+    /**
+     * method for create property for iblock
+     *
+     * @param array $result
+     * @return array
+     */
+    private function createPropIblock(array $result) :array
     {
-        //yield;
+
         //create property if empty
         $propertyCodeIblock = array_keys($this->iblockFields);
         $issetProp = $this->isExistPropertyFields($this->iblock['ID'], $propertyCodeIblock[0]);
@@ -191,9 +226,15 @@ class FabricContacts extends IBlockMigration
         return $result;
     }
 
-    private function createElementsIblock($result)
+    /**
+     * Method for create demo elements
+     *
+     * @param array $result
+     * @return array
+     * @throws \Exception
+     */
+    private function createElementsIblock(array $result) : array
     {
-        //yield;
         if (!$this->isExistElements($this->iblock['CODE'])) {
             foreach ($this->arContactElements as $item) {
                 $resAddEl = $this->addElementIblock($this->iblock['ID'], $item);
@@ -220,35 +261,21 @@ class FabricContacts extends IBlockMigration
      * This method create typeIblock, iblock, it`s prop, it`s demo elements
      * @return array
      */
-    public function fabricOffice(): array
+    public function create(): array
     {
         $error = [];
         $msg = [];
         $result = [];
 
         try {
-            $result = ReferenceKernel::start(function () {
-                global $result;
-                $result = yield $this->createTypeIblock($result);
-                $result = yield $this->createIblock($result);
-                $result = yield $this->createPropIblock($result);
-                $result = yield $this->createElementsIblock($result);
-                Tools::logFile($result, '$result in reference');
-                return $result;
-            });
+                $result =  $this->createTypeIblock($result);
+                $result = $this->createIblock($result);
+                $result =  $this->createPropIblock($result);
+                $result =  $this->createElementsIblock($result);
+
         } catch (\Exception $e) {
             $result['ERROR'] = $e->getMessage();
         }
-
-
-        Tools::logFile($result, '$result after ref');
-//            ->otherwise(function (\Exception $x) {
-//
-//                // Propagate the rejection
-//                $result['ERROR'] = $x->getMessage();
-//                return $result;
-//            });
-
 
         return $result;
     }
