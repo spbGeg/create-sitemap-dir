@@ -43,7 +43,7 @@ class IBlockMigration
             }
             return $result;
 
-        } catch (\Exception) {
+        } catch (\Exception $ib) {
             $result['ERROR'] = 'Ошибка: ' . $ib->LAST_ERROR . '<br>';
             return $result;
         }

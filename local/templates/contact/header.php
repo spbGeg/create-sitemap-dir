@@ -4,9 +4,6 @@
 /** @global CMain $APPLICATION */
 /** @global CUser $USER */
 
-
-$USER->Authorize(1);
-
 use Bitrix\Main\Page\Asset;
 
 ?>
