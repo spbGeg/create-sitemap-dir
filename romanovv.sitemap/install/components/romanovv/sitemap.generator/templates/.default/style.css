@@ -1,0 +1,8 @@
+.adm-btn-save.btn-generate-sitemap{
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.adm-gen-sitmap-table input[disabled][type="submit"]{
+    padding: 20px;
+}

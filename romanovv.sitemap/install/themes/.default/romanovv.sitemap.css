@@ -1,0 +1,30 @@
+/*Menu icon*/
+.romanovv_sitemap_menu_icon {
+    background-image:url('icons/romanovv.sitemap/romanovv_sitemap_page_icon.png');
+    background-position: 9px 4px;
+}
+#romanovv_sitemap_menu_icon {
+    background-image:url('icons/romanovv.sitemap/romanovv_sitemap_page_icon.png');
+}
+.adm-gen-sitmap-wrapper{
+    margin-top: 50px;
+}
+.adm-gen-sitmap-table{
+margin-bottom: 30px;
+}
+.path-exist{
+    color: green;
+    background: white;
+    padding-left: 10px;
+}
+.adm-gen-sitmap-path{
+
+    background: white;
+    padding: 10px;
+}
+.adm-gen-sitmap-path.exist {
+    color: green;
+}
+.adm-gen-sitmap-path.not-exist {
+    color: red;
+}

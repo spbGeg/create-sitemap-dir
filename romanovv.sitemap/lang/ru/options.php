@@ -1,0 +1,12 @@
+<?php defined('B_PROLOG_INCLUDED') and (B_PROLOG_INCLUDED === true) or die();
+$MESS["ROMANOVV_SITEMAP_NEED_AUTH"] = "Доступ только администратору";
+$MESS["ROMANOVV_SITEMAP_NAME_SITEMAP"] = "Имя и расположение файла sitemap";
+$MESS["ROMANOVV_SITEMAP_PATH_FOLDER"] = "Путь до папки с изображениями";
+$MESS["ROMANOVV_SITEMAP_PATH_FOLDER_SAVE"] = "Путь к директории успешно сохранен";
+$MESS["ROMANOVV_SITEMAP_PATH_FOLDER_WRONG"] = "Такой директории не существует";
+$MESS["ROMANOVV_SITEMAP_NO_SET_PATH_FOLDER"] = "Вы не ввели путь к директории";
+$MESS["ROMANOVV_SITEMAP_NO_SET_NAME_SITEMAP"] = "Вы не задали название и расположение файла sitemap";
+$MESS["ROMANOVV_SITEMAP_SETTING_DEFAULT_SET"] = "Настройки сброшены";
+$MESS["ROMANOVV_SITEMAP_SETTING_SAVE"] = "Настройки сохранены";
+$MESS["ROMANOVV_SITEMAP_ALLOW_EXT"] = "Допустимые расширения файлов";
+$MESS["ROMANOVV_SITEMAP_EXT_NOT_SET"] = "Допустимые расширения файлов не заданы";
