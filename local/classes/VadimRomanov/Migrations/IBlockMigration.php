@@ -98,19 +98,18 @@ class IBlockMigration
 
         $obBlocktype = new \CIBlockType;
 
-       // try {
-            //yield;
+        try {
+
             $res = $obBlocktype->Add($arFields);
             if ($res) {
                 $result['STATUS'] = 'success';
-                //$result['IBLOCK_TYPE'] = $res;
             }
 
             return $result;
-//        } catch (\Exception) {
-//            $result['ERROR'] = 'Error: ' . $obBlocktype->LAST_ERROR . '<br>';
-//            return $result;
-//        }
+        } catch (\Exception $obBlocktype) {
+            $result['ERROR'] = 'Error: ' . $obBlocktype->LAST_ERROR . '<br>';
+            return $result;
+        }
     }
 
     /**
