@@ -2,16 +2,30 @@
     die();
 }
 
+use \Bitrix\Main\Data\Cache;
+use \Bitrix\Main\Application;
+
+/** @var CBitrixComponent
+ * @var array $arParams
+ * @var array $arResult
+ * @var string $componentPath
+ * @var string $conmpnentName
+ * @global CDatabase $DB
+ * @global CUser $USER
+ */
+/** @global CMain $APPLICATION */
+
+
+$arResult = array();
+$arRes = array();
 
 
 
+$cache = Cache::createInstance(); // Служба кеширования
+$taggedCache = Application::getInstance()->getTaggedCache();
+$cachePath = 'contacts-path';
+$cacheTtl = 86400;
 
-
-
-/*
-
-
-$arParams["CACHE_TIME"] = 86400;
 $arRes["CUR_PAGE"] = $APPLICATION->GetCurPage(false);
 
 $arRes["ORDER"] = array(
@@ -33,11 +47,18 @@ $arRes["SELECT"] = array(
 
 $CACHE_ID = serialize(array($arRes["CUR_PAGE"], $arRes["SELECT"], $arRes["FILTER"]));
 
-if ($this->startResultCache($arParams["CACHE_TIME"], $CACHE_ID)) {
-    $arResult['RAND'] = rand(0, 20);
-    $helperIblock = new \VadimRomanov\HelperIblock();
+
+if ($cache->initCache($cacheTtl, $CACHE_ID, $cachePath)) {
+    $arResult = $cache->getVars();
+}elseif($cache->startDataCache()){
+    $taggedCache->startTagcache($cachePath);
     try {
+        $arResult['RAND'] = rand(0, 20);
+
+        $helperIblock = new \VadimRomanov\HelperIblock();
         $iblockTableName = $helperIblock->getTablePathIblock('contacts');
+        $contactsIblockId = '';
+
         $elements = $iblockTableName::getList([
             'select' => $arRes['SELECT'],
             'order' => $arRes['ORDER'],
@@ -49,7 +70,8 @@ if ($this->startResultCache($arParams["CACHE_TIME"], $CACHE_ID)) {
         $arResult['COUNT_TOTAL'] = $elements->count();
         if (!$arResult['COUNT_TOTAL'])
         {
-            $this->AbortResultCache();
+            $taggedCache->abortTagCache();
+            $cache->abortDataCache();
             return;
         }
         foreach ($elements as $element) {
@@ -61,25 +83,23 @@ if ($this->startResultCache($arParams["CACHE_TIME"], $CACHE_ID)) {
             $el['COORDS'] = $element->get('COORDS')->getValue();
             $el['CITY'] = $element->get('CITY')->getValue();
             $arResult['ITEMS'][] = $el;
+
+            if(!$contactsIblockId){
+                $contactsIblockId = $element->get('IBLOCK_ID');
+            }
         }
 
-        $this->SetResultCacheKeys(array(
-                "ID",
-                "NAME",
-                "PHONE",
-                "EMAIL",
-                "COORDS",
-                "CITY"
-            )
-        );
-        $this->EndResultCache();
+        $taggedCache->registerTag('iblock_id_' . $contactsIblockId);
+        $taggedCache->endTagCache();
+        $cache->endDataCache($arResult);
+
     } catch (Exception $e) {
         $arResult['ERROR'] = $e->getMessage();
     }
 
-
 }
 
-*/
+
+
 
 $this->IncludeComponentTemplate();

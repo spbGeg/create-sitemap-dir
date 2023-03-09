@@ -12,7 +12,6 @@ if (SITE_TEMPLATE_ID !== 'contact') {
     $error = GetMessage('ROMANOVV_SET_TMPL_CONTACTS') . SITE_TEMPLATE_ID;
 }
 ?>
-
     <!-- ******CONTACTS****** -->
     <section  class="contacts section">
         <div class="container">
