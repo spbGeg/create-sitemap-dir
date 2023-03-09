@@ -57,7 +57,7 @@ use Bitrix\Main\Page\Asset;
                     <li class="nav-item"><a class="scrollto" href="#">О нас</a></li>
                     <li class="nav-item"><a class="scrollto" href="#">Продукция</a></li>
                     <li class="nav-item"><a class="scrollto" href="#">Документация</a></li>
-                    <li class="nav-item last"><a  href="/contact/">Контакты</a></li>
+                    <li class="nav-item last"><a  href="/contacts/">Контакты</a></li>
                 </ul><!--//nav-->
             </div><!--//navabr-collapse-->
         </nav><!--//main-nav-->
