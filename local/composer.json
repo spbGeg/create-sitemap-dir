@@ -1,0 +1,11 @@
+{
+    "require": {
+        "php": ">=8.0"
+            },
+    "config": {
+        "sort-packages": true,
+        "platform": {
+            "php": "8.0"
+        }
+    }
+}

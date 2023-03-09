@@ -58,7 +58,7 @@ class IBlockMigration
      * @throws \Bitrix\Main\ArgumentException
      * @throws \Bitrix\Main\ObjectPropertyException
      */
-    public function findTypeIblock($typeCode)
+    public function issetTypeIblock($typeCode)
     {
         $result = \Bitrix\Iblock\TypeTable::getList([
             'select' => [
@@ -78,6 +78,7 @@ class IBlockMigration
      */
     public function addTypeIblock($typeCode)
     {
+
         $result = [
             'status' => false,
             'error' => false
@@ -97,17 +98,19 @@ class IBlockMigration
 
         $obBlocktype = new \CIBlockType;
 
-        try {
+       // try {
+            //yield;
             $res = $obBlocktype->Add($arFields);
             if ($res) {
                 $result['STATUS'] = 'success';
-                $result['IBLOCK_TYPE'] = $res;
+                //$result['IBLOCK_TYPE'] = $res;
             }
+
             return $result;
-        } catch (\Exception) {
-            $result['ERROR'] = 'Error: ' . $obBlocktype->LAST_ERROR . '<br>';
-            return $result;
-        }
+//        } catch (\Exception) {
+//            $result['ERROR'] = 'Error: ' . $obBlocktype->LAST_ERROR . '<br>';
+//            return $result;
+//        }
     }
 
     /**

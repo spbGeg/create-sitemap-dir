@@ -4,7 +4,6 @@
 
 use Bitrix\Main\Config\Option;
 
-
 /** @var CBitrixComponent
  * @var array $arParams
  * @var array $arResult
@@ -21,21 +20,33 @@ $arRes = array();
 
 //create new office if no exist
 $arResult['CREATE_ELEMENTS'] = [];
+$arResult['ERROR'] = [];
+$arResult['ERROR'] = [];
 
+//check site template
+if(SITE_TEMPLATE_ID !== 'contact'){
+    $arResult['ERROR'][] = GetMessage('ROMANOVV_SET_TMPL_CONTACTS'). SITE_TEMPLATE_ID;
+}
 $isCreatedEl = Option::get('romanovv.contact', 'create_elements');
 
+//create demo elements
 if (!$isCreatedEl) {
+
     $obFabricContact = new \VadimRomanov\FabricContacts();
-    $resCreateEl = $obFabricContact->fabricOffice();
+    $resCreateEl = $obFabricContact->create();
 
-    $arResult['CREATE_ELEMENTS']['STATUS'] =  $resCreateEl['STATUS'];
-    $arResult['CREATE_ELEMENTS']['MSG'] = implode('<br>', $resCreateEl['MSG']);
-    $arResult['CREATE_ELEMENTS']['ERROR'] = implode(', ', $resCreateEl['ERROR']);
+    $arResult['MSG'] = (isset($resCreateEl['MSG'])) ? implode('<br>', $resCreateEl['MSG']) : '';
+    $arResult['ERROR'][] =  $resCreateEl['ERROR'];
 
-    if ($arResult['CREATE_ELEMENTS']['STATUS'] === 'allCreated') {
+    if ($resCreateEl['STATUS'] === 'allCreated') {
+
         Option::set('romanovv.contact', 'create_elements', 'Y');
+        $isCreatedEl = 'Y';
     }
 }
+$arResult['ERROR'] = implode('<br>', $arResult['ERROR']);
+
+
 
 if ($isCreatedEl) {
 
@@ -63,37 +74,38 @@ if ($isCreatedEl) {
 
     if ($this->startResultCache($arParams["CACHE_TIME"], $CACHE_ID)) {
         $helperIblock = new \VadimRomanov\HelperIblock();
-        $iblockTableName = $helperIblock->getTablePathIblock('contacts');
+        try{
+            $iblockTableName = $helperIblock->getTablePathIblock('contacts');
+            $elements = $iblockTableName::getList([
+                'select' => $arRes['SELECT'],
+                'order' => $arRes['ORDER'],
+                'filter' => $arRes['FILTER'],
+            ])->fetchCollection();
 
-        $elements = $iblockTableName::getList([
-            'select' => $arRes['SELECT'],
-            'order' => $arRes['ORDER'],
-            'filter' => $arRes['FILTER'],
-            "cache" => [
-                "ttl" => $arParams["CACHE_TIME"],
-            ],
-        ])->fetchCollection();
-        foreach ($elements as $element) {
-            $el = [];
-            $el['ID'] = $element->getID();
-            $el['NAME'] = $element->getName();
-            $el['PHONE'] = $element->get('PHONE')->getValue();
-            $el['EMAIL'] = $element->get('EMAIL')->getValue();
-            $el['COORDS'] = $element->get('COORDS')->getValue();
-            $el['CITY'] = $element->get('CITY')->getValue();
-            $arResult['ITEMS'][] = $el;
+            foreach ($elements as $element) {
+                $el = [];
+                $el['ID'] = $element->getID();
+                $el['NAME'] = $element->getName();
+                $el['PHONE'] = $element->get('PHONE')->getValue();
+                $el['EMAIL'] = $element->get('EMAIL')->getValue();
+                $el['COORDS'] = $element->get('COORDS')->getValue();
+                $el['CITY'] = $element->get('CITY')->getValue();
+                $arResult['ITEMS'][] = $el;
+            }
+
+            $this->SetResultCacheKeys(array(
+                    "ID",
+                    "NAME",
+                    "PHONE",
+                    "EMAIL",
+                    "COORDS",
+                    "CITY",
+                )
+            );
+            $this->EndResultCache();
+        }catch (Exception $e){
+            $arResult['ERROR'] = $e->getMessage();
         }
-
-        $this->SetResultCacheKeys(array(
-                "ID",
-                "NAME",
-                "PHONE",
-                "EMAIL",
-                "COORDS",
-                "CITY",
-            )
-        );
-        $this->EndResultCache();
 
     }
 }

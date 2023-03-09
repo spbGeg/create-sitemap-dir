@@ -6,9 +6,8 @@
 
 ?>
 <div class="map-contact">
-    <div class="map-contact__msg <?= ($arResult['CREATE_ELEMENTS']['ERROR']) ? ' error' : '' ?>">
-        <?= $arResult['CREATE_ELEMENTS']['MSG'] . ' ' . $arResult['CREATE_ELEMENTS']['ERROR'] ?>
-    </div>
+    <div class="map-contact__msg"><?= $arResult['CREATE_ELEMENTS']['MSG'] ?></div>
+    <div class="map-contact__msg error"><?= ($arResult['ERROR']) ? 'Ошибка: ' . $arResult['ERROR'] . '!' : ''?></div>
     <div class="map-contact__container container">
         <? if (!empty($arResult['ITEMS'])) { ?>
             <div class="map-contact__elements">

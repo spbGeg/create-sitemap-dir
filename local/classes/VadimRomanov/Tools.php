@@ -9,7 +9,7 @@ class Tools
     protected static $logFile = '__mylog.txt';
 
     public static function logFile($val, $header = null, $filePath = null) {
-        \Bitrix\Main\Diag\Debug::dumpToFile($val, !empty($header) ? $header : '', !empty($filePath) ? $filePath : self::$logFile);
+        \Bitrix\Main\Diag\Debug::writeToFile($val, !empty($header) ? $header : '', !empty($filePath) ? $filePath : self::$logFile);
     }
 
     public static function dumpConsole($arr, $msg = 'console debug'){
