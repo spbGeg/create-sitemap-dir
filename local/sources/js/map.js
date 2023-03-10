@@ -8,6 +8,7 @@ function JSMapContacts(wrap) {
     $curapp.wrap = wrap;
     $curapp.errorField = '';
     $curapp.offices = {};
+    $curapp.spinner = '';
 
     $curapp.init();
 }
@@ -17,7 +18,7 @@ function JSMapContacts(wrap) {
  */
 JSMapContacts.prototype.init =  function () {
     let $curapp = this;
-
+    $curapp.spinner = $curapp.wrap.find('.loader');
     $curapp.errorField = $curapp.wrap.find('.error');
      $curapp.showMap();
 }
@@ -98,10 +99,21 @@ JSMapContacts.prototype.createMap = function () {
 }
 
 
+
 /**
  * render error in field
  * @param $error
  */
+JSMapContacts.prototype.setDownloadProccess = function (status){
+    var $curapp = this;
+    if(status === true){
+        $curapp.spinner.fadeOut();
+    }else{
+        console.log('$curapp.spinner',$curapp.spinner );
+        $curapp.spinner.hide();
+    }
+
+}
 JSMapContacts.prototype.setError = function ($error){
     $('.map-contact__msg').text($error);
 }
@@ -132,7 +144,6 @@ JSMapContacts.prototype.showMap = async function () {
     });
     promiseGetOffice.then(
         value => {
-
             $curapp.offices = value
             if (!$.isEmptyObject(value)) {
 
@@ -142,6 +153,8 @@ JSMapContacts.prototype.showMap = async function () {
                 $curapp.insertYmapScript();
             }
             $curapp.createMap()
+
+            $curapp.setDownloadProccess(false);
         },
 
     ).catch( value =>{

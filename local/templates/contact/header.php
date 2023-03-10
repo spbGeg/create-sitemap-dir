@@ -19,6 +19,7 @@ use Bitrix\Main\Page\Asset;
     Asset::getInstance()->addCss('/local/sources/plugins/bootstrap/css/bootstrap.min.css');
     Asset::getInstance()->addCss('/local/sources/plugins/font-awesome/css/font-awesome.min.css');
     Asset::getInstance()->addCss('/local/sources/plugins/prism/prism.min.css');
+    //Asset::getInstance()->addCss(SITE_TEMPLATE_PATH .'/style.scss');
 
    //JS
    Asset::getInstance()->addJs('/local/sources/plugins/jquery-1.11.3.min.js');
