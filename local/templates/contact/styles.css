@@ -1,0 +1,101 @@
+.page {
+  min-height: 800px; }
+
+/*---MAIN PAGE ---*/
+.promo.section {
+  min-height: 1000px; }
+
+/*---CONTACTS ---*/
+.about.section {
+  min-height: 800px; }
+
+.container {
+  max-width: 1680px;
+  margin: 0 auto;
+  padding-left: 30px;
+  padding-right: 30px; }
+
+.map-contact__container {
+  padding-top: 50px;
+  padding-bottom: 50px; }
+
+.map-contact__map {
+  height: 100vh;
+  max-height: 62.5rem;
+  background: #f9f9fc; }
+
+.contacts {
+  padding: 100px 0;
+  background: #f5f5f5;
+  min-height: 800px; }
+
+.map-contact__msg {
+  font-weight: 700;
+  margin-left: 30px;
+  color: #276e14; }
+
+.map-contact__msg.error {
+  color: #e12525; }
+
+.map-contact__msg, .no-elements {
+  text-align: center;
+  color: green;
+  font-weight: 600; }
+
+/* spinner */
+.loader {
+  position: absolute;
+  left: 50%;
+  top: 72%;
+  z-index: 100;
+  width: 150px;
+  height: 150px; }
+
+svg {
+  width: 90%;
+  fill: none; }
+
+.load {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 570;
+  stroke-width: 20px; }
+  .load.one {
+    stroke: #554d73;
+    animation: load 1.5s infinite; }
+  .load.two {
+    stroke: #a496a4;
+    animation: load 1.5s infinite;
+    animation-delay: 0.1s; }
+  .load.three {
+    stroke: #a5a7bb;
+    animation: load 1.5s infinite;
+    animation-delay: 0.2s; }
+
+.point {
+  animation: bounce 1s infinite ease-in-out; }
+  .point.one {
+    fill: #a5a7bb;
+    animation-delay: 0s; }
+  .point.two {
+    fill: #a496a4;
+    animation-delay: 0.1s; }
+  .point.three {
+    fill: #554d73;
+    animation-delay: 0.2s; }
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0); }
+  50% {
+    transform: translateY(-20px); } }
+@keyframes load {
+  0% {
+    stroke-dashoffset: 570; }
+  50% {
+    stroke-dashoffset: 530; }
+  100% {
+    stroke-dashoffset: 570;
+    transform: rotate(360deg); } }
+
+/*# sourceMappingURL=styles.css.map */
