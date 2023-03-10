@@ -30,7 +30,4 @@ jQuery(document).ready(function($) {
 		
 	});
 
-
-
-
 });
