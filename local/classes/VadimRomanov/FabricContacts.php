@@ -90,7 +90,7 @@ class FabricContacts extends IBlockMigration
                 'CITY' => 'Солнечногорск',
                 'PHONE' => '74962643909',
                 'EMAIL' => 'ooona@mail.ru',
-                'COORDS' => '56.179956, 36.967648',
+                'COORDS' => '56.179956, 34.967648',
             ]
         ],
         [
@@ -137,7 +137,7 @@ class FabricContacts extends IBlockMigration
     }
 
     /**
-     * Method for crfeate type iblock
+     * Method for create type iblock
      *
      * @param $result
      * @return array

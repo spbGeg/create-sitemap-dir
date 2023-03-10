@@ -1,3 +1,8 @@
+/**
+ * class for render elements on map
+ * @param wrap
+ * @constructor
+ */
 function JSMapContacts(wrap) {
     var $curapp = this;
     $curapp.wrap = wrap;
@@ -7,21 +12,22 @@ function JSMapContacts(wrap) {
     $curapp.init();
 }
 
+/**
+ * init class
+ */
 JSMapContacts.prototype.init =  function () {
     let $curapp = this;
 
     $curapp.errorField = $curapp.wrap.find('.error');
      $curapp.showMap();
-
-    console.log('$curapp.offices', $curapp.offices);
-
 }
 
+/**
+ * Add script yandex to header
+ */
 JSMapContacts.prototype.insertYmapScript = function (){
-    $curapp = this;
 
         let $contacts = document.querySelector('.js-map')
-    console.log('$contacts',$contacts );
         if ($contacts) {
             let contactsTop = $contacts.getBoundingClientRect().top;
 
@@ -41,9 +47,11 @@ JSMapContacts.prototype.insertYmapScript = function (){
 }
 
 
-
+/**
+ * insert in map elements
+ */
 JSMapContacts.prototype.createMap = function () {
-
+    var $curapp = this;
     window.offices = $curapp.offices;
     window.initYaMaps = function initYaMaps() {
 
@@ -56,16 +64,14 @@ JSMapContacts.prototype.createMap = function () {
                     center: [50.443705, 30.530946],
                     zoom: 16,
                 });
-                console.log('window.offices in inity yamap2', window.offices);
 
                 window.offices.forEach(function (office) {
-                    console.log('office in foreach', office);
 
                     let coords = office.coords.split(',');
-                    let name = office.coords.name;
-                    let city = office.coords.city;
-                    let phone = office.coords.phone;
-                    let email = office.coords.email;
+                    let name = office.name;
+                    let city = office.city;
+                    let phone = office.phone;
+                    let email = office.email;
                     myMap.geoObjects.add(new ymaps.Placemark(coords, {
                         balloonContentHeader: name,
                         balloonContentBody: city,
@@ -92,10 +98,18 @@ JSMapContacts.prototype.createMap = function () {
 }
 
 
-
+/**
+ * render error in field
+ * @param $error
+ */
 JSMapContacts.prototype.setError = function ($error){
     $('.map-contact__msg').text($error);
 }
+
+/**
+ * get elements office, render it in map
+ * @returns {Promise<void>}
+ */
 JSMapContacts.prototype.showMap = async function () {
     var $curapp = this;
 
@@ -107,7 +121,6 @@ JSMapContacts.prototype.showMap = async function () {
             dataType: 'json',
             success: function (data) {
                 if (data.success) {
-                    console.log('data', data);
                     resolve(data.items);
                 } else {
                     reject(data.error);
@@ -119,10 +132,9 @@ JSMapContacts.prototype.showMap = async function () {
     });
     promiseGetOffice.then(
         value => {
-            console.log('value', value);
+
             $curapp.offices = value
             if (!$.isEmptyObject(value)) {
-                console.log('start add elem', value);
 
                 window.addEventListener("scroll", function () {
                     $curapp.insertYmapScript();

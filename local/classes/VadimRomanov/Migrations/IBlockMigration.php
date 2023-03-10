@@ -3,15 +3,12 @@
 namespace VadimRomanov\Migrations;
 
 
-use Bitrix\Main\Loader;
 use Bitrix\Iblock;
 use Bitrix\Main\SystemException;
 use VadimRomanov\HelperIblock;
-use VadimRomanov\Tools;
 
 class IBlockMigration
 {
-
     /**
      * Create new iblock
      * @param $typeCode

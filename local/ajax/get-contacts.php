@@ -5,16 +5,13 @@ require $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/prolog_before.
 use \Bitrix\Main\Data\Cache;
 use \Bitrix\Main\Application;
 
-\VadimRomanov\Tools::logFile('start ajax');
-
-
 /** @global CMain $APPLICATION */
 try {
 
     $response = array();
     $arRes = array();
     $response['success'] = false;
-    $cache = Cache::createInstance(); // Служба кеширования
+    $cache = Cache::createInstance();
     $taggedCache = Application::getInstance()->getTaggedCache();
     $cachePath = 'contacts-path';
     $cacheTtl = 86400;
@@ -88,8 +85,9 @@ try {
 
     }
 } catch (Exception $e) {
+
     $response['error'] = $e->getMessage();
+
 } finally {
-    \VadimRomanov\Tools::logFile($response, '$response');
     print json_encode($response, JSON_UNESCAPED_UNICODE);
 }
